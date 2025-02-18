@@ -13,3 +13,7 @@ An interactive sorting visualizer built with Streamlit and Plotly, showcasing th
     ```
 
 Adjust the sample size, frame rate, and control the sorting process to visualize the sorting steps.
+
+## Example visualization: 
+
+![Sorting Visualizer](images/example.png)
