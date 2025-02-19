@@ -1,4 +1,4 @@
-import random 
+
 
 def insertion_sort(lst):
     """
@@ -19,49 +19,59 @@ def insertion_sort(lst):
     yield lst, {}
 
 
-def merge(l1, l2):
+def merge(lst, left, mid, right):
 
-    n1 = len(l1)
-    n2 = len(l2)
+    x = lst[left:right]
 
-    ls = [None] * (n1+n2)
+    n1 = len(lst[left:mid])
+    n2 = len(lst[mid:right])
+    
+    l1, l2 = [None] * n1, [None] * n2
+
+    for i in range(0, n1):
+        l1[i] = lst[left+i]
+    for j in range(0, n2): 
+        l2[j] = lst[mid+j]
 
     i = 0
-    j = 0 
-    k = 0
+    j = 0
+    k = left
 
-    while i < n1 and i < n2: # compare current elements in list, and add the smallest to new list.
+    while i < n1 and j < n2: # compare current elements in list, and add the smallest to new list.
         if l1[i] <= l2[j]:
-            ls[k] = l1[i]
+            yield lst, {left+i: 'red', mid+j: 'green', k: 'white'}
+            lst[k] = l1[i]
             i += 1
         else:
-            ls[k] = l2[j]
+            yield lst, {left+i: 'red', mid+j: 'green', k: 'white'}
+            lst[k] = l2[j]
             j += 1
         k += 1
 
     # when one of the initial lists are empty, copy the rest of the other list.
     while i < n1:
-        ls[k] = l1[i]
+        lst[k] = l1[i]
         i += 1
         k += 1
     while j < n2:
-        ls[k] = l2[j]
+        lst[k] = l2[j]
         j += 1
         k += 1 
 
-    return ls    
+    yield lst, {}
 
-def merge_sort(lst):
-    if len(lst) <= 1:
+def merge_sort(lst, left=0, right=None):
+    if not right: 
+        right = len(lst)
+    if len(lst[left:right]) <= 1:
         return lst
-    q = int(len(lst)/2) # int floors
-    l1 = merge_sort(lst[:q])
-    l2 = merge_sort(lst[q:])
-    ls = merge(l1, l2)
-    return ls 
+    mid = int((left+right)/2) # midpoint, int floors
+    yield from merge_sort(lst, left, mid)
+    yield from merge_sort(lst, mid, right)
+    yield from merge(lst, left, mid, right)
+    yield lst, {}
 
 def partition(lst):
-    # print(lst)
 
     n = len(lst)
     pivot_value = lst[-1]
@@ -94,30 +104,34 @@ def quicksort(lst):
 
 if __name__ == '__main__':
 
+    import random 
+
     l = [5, 6, 8, 14, 2, 4]
     n = 100
     min, max = 1, 100
     l2 = [random.randint(min, max) for _ in range(0, 32)]
 
     print(l)
-    print(n, l2)
+    # print(n, l2)
 
-    insertion_sort(l)
-    l2_insertion_sort = insertion_sort(l2)
+    # insertion_sort(l)
+    # l2_insertion_sort = insertion_sort(l2)
 
-    merge_sort(l)
+    # print(merge_sort(l))
     l2_merge_sort = merge_sort(l2)
 
-    quicksort(l)
-    l2_quicksort = quicksort(l2)
+    # quicksort(l)
+    # l2_quicksort = quicksort(l2)
 
-    print(l)
-    print(l2_insertion_sort)
-    print(l2_merge_sort)
-    print(l2_quicksort)
-    print('Check discrepancies:')
-    print([(x,y) for (x,y) in zip(l2_insertion_sort, l2_merge_sort) if x != y])
-    print([(x,y) for (x,y) in zip(l2_insertion_sort, l2_quicksort) if x != y])
+    # print(l)
+    # print(l2_insertion_sort)
+    for l in l2_merge_sort:
+        print(l)
+    # print(next(l2_merge_sort))
+    # print(l2_quicksort)
+    # print('Check discrepancies:')
+    #print([(x,y) for (x,y) in zip(l2_insertion_sort, l2_merge_sort) if x != y])
+    # print([(x,y) for (x,y) in zip(l2_insertion_sort, l2_quicksort) if x != y])
 
 
 
